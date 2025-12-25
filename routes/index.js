@@ -23,7 +23,7 @@ router.post('/admin/login', adminLogin.login);
 router.post('/admin/products', adminController.insertproduct);
 router.post('/admin/products/list', adminController.getproductList);
 router.put('/admin/products/:id', adminController.updateproduct);
-router.delete('/admin/products/:name', adminController.deleteproduct);
+router.delete('/admin/products/:id', adminController.deleteproduct);
 
 /* =======================
    USER AUTH
@@ -34,6 +34,7 @@ router.post('/user/login', userLogin.login);
 /* =======================
    USER PRODUCT APIs
    ======================= */
+   router.post('/user/products/list', userController.getproductList);
 router.post('/user/cart', userController.addtocart);
 router.delete('/user/cart/:id', userController.removefromcart);
 
