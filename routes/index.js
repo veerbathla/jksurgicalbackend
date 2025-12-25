@@ -34,7 +34,7 @@ router.post('/user/login', userLogin.login);
 /* =======================
    USER PRODUCT APIs
    ======================= */
-   router.post('/user/products/list', userController.getproductList);
+   router.post('/user/products/list', userController.showcart);
 router.post('/user/cart', userController.addtocart);
 router.delete('/user/cart/:id', userController.removefromcart);
 
