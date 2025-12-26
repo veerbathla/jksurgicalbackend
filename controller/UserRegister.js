@@ -4,10 +4,10 @@ const register = async (req, res) => {
     try {
         console.log(req.body);
 
-        const { username, password, email } = req.body;
+        const { username, password } = req.body;
 
         // ✅ basic validation
-        if (!username || !password || !email) {
+        if (!username || !password) {
             return res.send({
                 status: "Required fields missing",
                 statuscode: 400
