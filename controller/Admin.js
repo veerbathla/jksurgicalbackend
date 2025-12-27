@@ -8,20 +8,9 @@ const { ObjectId } = require("mongodb");
    ======================= */
 const getproductList = async (req, res) => {
     try {
-        const token = req.body.token;
-        if (!token) {
-            return res.status(401).json({ message: "No token provided" });
-        }
-
-        let decoded;
-        try {
-            decoded = jwt.verify(token, 'veerbathla@1234');
-        } catch (err) {
-            return res.status(401).json({ message: "Invalid token", error: err.message });
-        }
-
         const db = await database();
         const collection = db.collection("admin");
+
         const result = await collection.find().toArray();
 
         console.log(result);
@@ -29,9 +18,14 @@ const getproductList = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error", error: err.message });
+        res.status(500).json({
+            message: "Server error",
+            error: err.message
+        });
     }
 };
+
+module.exports = { getproductList };
 
 /* =======================
    INSERT PRODUCT
@@ -77,8 +71,8 @@ const insertproduct = async (req, res) => {
    ======================= */
 const deleteproduct = async (req, res) => {
     try {
-        // Token verify
-        const resultnew = jwt.verifyToken(req.body.token);
+        // ✅ Token verify (CUSTOM AUTH)
+        const resultnew = auth.verifyToken(req.body.token);
 
         if (!resultnew.valid) {
             return res.status(401).send({
@@ -87,32 +81,36 @@ const deleteproduct = async (req, res) => {
             });
         }
 
-        // get id from params
+        // ✅ get id from params
         const id = req.params.id;
+
+        if (!id) {
+            return res.status(400).send({
+                message: "Product ID is required"
+            });
+        }
 
         const db = await database();
         const collection = db.collection("admin");
 
-        const result = await collection.deleteOne({ _id: new ObjectId(id) });
+        const result = await collection.deleteOne({
+            _id: new ObjectId(id)
+        });
 
         if (result.deletedCount === 0) {
             return res.status(404).send({
-                status: "Data not found",
-                statuscode: 404
+                message: "Product not found"
             });
         }
 
-        res.send({
-            status: "data deleted successfully",
-            statuscode: 200,
-            data: id
+        res.status(200).send({
+            message: "Product deleted successfully",
+            deletedId: id
         });
-
-        console.log("data deleted successfully");
 
     } catch (err) {
         res.status(500).send({
-            status: "Server Error",
+            message: "Server Error",
             error: err.message
         });
     }
